@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addEmailAddress } from '../Redux/actions';
+import { addLoginInfo } from '../Redux/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -28,8 +28,8 @@ class Login extends Component {
 
   render() {
     const { email, playerName } = this.state;
-    const { sendEmail } = this.props;
-    const { handleChange, verifyLogin } = this;
+    const { sendInfo } = this.props;
+    const { handleChange, verifyLogin, state } = this;
     return (
       <form action="">
         <input
@@ -51,7 +51,7 @@ class Login extends Component {
         <button
           type="button"
           data-testid="btn-play"
-          onClick={ () => sendEmail(email) }
+          onClick={ () => sendInfo(state) }
           disabled={ !verifyLogin() }
         >
           Jogar
@@ -62,11 +62,11 @@ class Login extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  sendEmail: (emailAddress) => dispatch(addEmailAddress(emailAddress)),
+  sendInfo: (loginInfo) => dispatch(addLoginInfo(loginInfo)),
 });
 
 Login.propTypes = {
-  sendEmail: PropTypes.func.isRequired,
+  sendInfo: PropTypes.func.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(Login);

@@ -1,4 +1,4 @@
-import { SEND_EMAIL_ADDRESS } from '../actions';
+import { SEND_LOGIN_INFO } from '../actions';
 
 const INITIAL_STATE = {
   email: '',
@@ -7,8 +7,12 @@ const INITIAL_STATE = {
 
 function userInformation(state = INITIAL_STATE, action) {
   switch (action.type) {
-  case SEND_EMAIL_ADDRESS:
-    return ({ ...state, email: action.emailAddress });
+  case SEND_LOGIN_INFO:
+    return ({
+      ...state,
+      email: action.loginInfo.email,
+      playerName: action.loginInfo.playerName,
+    });
   default:
     return state;
   }

@@ -1,6 +1,6 @@
-export const SEND_EMAIL_ADDRESS = 'SEND_EMAIL_ADDRESS';
+export const SEND_LOGIN_INFO = 'SEND_EMAIL_ADDRESS';
 
-export const addEmailAddress = (emailAddress) => ({
-  type: SEND_EMAIL_ADDRESS,
-  emailAddress,
+export const addLoginInfo = (loginInfo) => ({
+  type: SEND_LOGIN_INFO,
+  loginInfo,
 });
