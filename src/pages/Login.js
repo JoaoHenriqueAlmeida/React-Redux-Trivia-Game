@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addLoginInfo } from '../Redux/actions';
+import { Link } from 'react-router-dom';
+import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
+import logo from '../trivia.png';
 
 class Login extends Component {
   constructor(props) {
@@ -28,45 +30,58 @@ class Login extends Component {
 
   render() {
     const { email, playerName } = this.state;
-    const { sendInfo } = this.props;
+    const { sendInfo, fetchApi } = this.props;
     const { handleChange, verifyLogin, state } = this;
     return (
-      <form action="">
-        <input
-          type="text"
-          placeholder="Nome"
-          data-testid="input-player-name"
-          name="playerName"
-          value={ playerName }
-          onChange={ (e) => handleChange(e) }
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          data-testid="input-gravatar-email"
-          name="email"
-          value={ email }
-          onChange={ (e) => handleChange(e) }
-        />
-        <button
-          type="button"
-          data-testid="btn-play"
-          onClick={ () => sendInfo(state) }
-          disabled={ !verifyLogin() }
-        >
-          Jogar
-        </button>
-      </form>
+      <header className="App-header">
+        <img src={ logo } className="App-logo" alt="logo" />
+        <p>
+          SUA VEZ
+        </p>
+        <form action="">
+          <input
+            type="text"
+            placeholder="Nome"
+            data-testid="input-player-name"
+            name="playerName"
+            value={ playerName }
+            onChange={ (e) => handleChange(e) }
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            data-testid="input-gravatar-email"
+            name="email"
+            value={ email }
+            onChange={ (e) => handleChange(e) }
+          />
+          <Link to="/game">
+            <button
+              type="button"
+              data-testid="btn-play"
+              onClick={ () => {
+                sendInfo(state);
+                fetchApi();
+              } }
+              disabled={ !verifyLogin() }
+            >
+              Jogar
+            </button>
+          </Link>
+        </form>
+      </header>
     );
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchApi: () => dispatch(fetchTokenAndQuestions()),
   sendInfo: (loginInfo) => dispatch(addLoginInfo(loginInfo)),
 });
 
 Login.propTypes = {
   sendInfo: PropTypes.func.isRequired,
+  fetchApi: PropTypes.func.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(Login);
