@@ -25,6 +25,7 @@ QuestionCard.propTypes = {
   questionText: PropTypes.string.isRequired,
   answerList: PropTypes.arrayOf(PropTypes.string).isRequired,
   questionCategory: PropTypes.string.isRequired,
+  correctAnswer: PropTypes.string.isRequired,
 };
 
 export default QuestionCard;
