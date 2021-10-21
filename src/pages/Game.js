@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
+import Header from '../components/Header';
 
 class Game extends React.Component {
   constructor(props) {
@@ -18,21 +19,29 @@ class Game extends React.Component {
   render() {
     const { questions, loading } = this.props;
     if (loading) {
-      return <div>Loading</div>;
+      return (
+        <>
+          <Header />
+          <div>Loading</div>
+        </>
+      );
     }
     return (
-      <section className="QuestionCard">
-        <h3 data-testid="question-text">{questions[0].question}</h3>
-        <h4 data-testid="question-category">{questions[0].category}</h4>
-        {questions[0].incorrect_answers.map((incorrectAnswer, index) => (
-          <button data-testid={ `wrong-answer-${index}` } type="button" key={ index }>
-            { incorrectAnswer }
+      <>
+        <Header />
+        <section className="QuestionCard">
+          <h3 data-testid="question-text">{questions[0].question}</h3>
+          <h4 data-testid="question-category">{questions[0].category}</h4>
+          {questions[0].incorrect_answers.map((incorrectAnswer, index) => (
+            <button data-testid={ `wrong-answer-${index}` } type="button" key={ index }>
+              { incorrectAnswer }
+            </button>
+          ))}
+          <button data-testid="correct-answer" type="button" key="3">
+            { questions[0].correct_answer }
           </button>
-        ))}
-        <button data-testid="correct-answer" type="button" key="3">
-          { questions[0].correct_answer }
-        </button>
-      </section>
+        </section>
+      </>
     );
   }
 }
