@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
 import logo from '../trivia.png';
+import Button from '../components/Button';
 
 class Login extends Component {
   constructor(props) {
@@ -67,7 +68,9 @@ class Login extends Component {
               Jogar
             </button>
           </Link>
+          <Button />
         </form>
+
       </header>
     );
   }
