@@ -5,11 +5,7 @@ import { Provider } from 'react-redux';
 import store from './Redux/store';
 
 test('VAI COMEÇAR, A CYBER LUTAAAAA... ATÉ CAIR! NÃO PERCA O CONTROLE, E AO TOPO VAMOS SUBIR!', () => {
-  const { getByText } = render(
-  <Provider store={store}>
-    <App />
-  </Provider>
-  );
+  const { getByText } = render(<App />);
   const linkElement = getByText(/SUA VEZ/i);
   expect(linkElement).toBeInTheDocument();
 });

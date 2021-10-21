@@ -1,13 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
+// import { connect } from 'react-redux';
+import QuestionCard from '../components/QuestionCard';
 
-class Game extends Component {
+class Game extends React.Component {
+  // questionCategory
+  // questionType
+  // questionDifficulty
+  // questionText
+  // questionCorrectAnswer
+  // qustionIncorrectAnswers
+
   render() {
+    const answerList = ['A pistol', 'The H.E.V suit', 'Your fists'];
+    const questionText = 'Pergunta teste?';
+    const questionCategory = 'E-sports';
     return (
-      <div>
-        <h1>GAME</h1>
-      </div>
+      <QuestionCard
+        answerList={ answerList }
+        questionText={ questionText }
+        questionCategory={ questionCategory }
+      />
     );
   }
 }
 
+// const mapStateToProps = ({ api: { questions } }) => ({
+//   questions,
+// });
+
+// Game.propTypes = {
+//   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
+// };
+
+// export default connect(mapStateToProps)(Game);
 export default Game;
