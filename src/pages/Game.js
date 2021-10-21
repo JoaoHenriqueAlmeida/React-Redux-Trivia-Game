@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
@@ -15,9 +16,6 @@ class Game extends React.Component {
   }
 
   render() {
-    // const answerList = ['A pistol', 'The H.E.V suit', 'Your fists'];
-    // const questionText = 'Pergunta teste?';
-    // const questionCategory = 'E-sports';
     const { questions, loading } = this.props;
     if (loading) {
       return <div>Loading</div>;
@@ -48,5 +46,11 @@ const mapDispatchToProps = (dispatch) => ({
   fetchQuestionsAndAnswers: () => dispatch(fetchTokenAndQuestions()),
   fetchApi: () => dispatch(fetchTokenAndQuestions()),
 });
+
+Game.propTypes = {
+  fetchApi: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  questions: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
