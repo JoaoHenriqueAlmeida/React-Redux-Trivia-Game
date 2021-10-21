@@ -24,7 +24,6 @@ export const fetchTokenAndQuestions = () => async (dispatch) => {
     const fetchQuestion = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const questionsJson = await fetchQuestion.json();
     const questions = await questionsJson.results;
-    console.log(questions);
     return dispatch(apiSuccess({ token, questions }));
   } catch (error) {
     console.log(error.message);
