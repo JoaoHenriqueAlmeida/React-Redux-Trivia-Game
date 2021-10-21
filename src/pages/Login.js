@@ -31,7 +31,7 @@ class Login extends Component {
 
   render() {
     const { email, playerName } = this.state;
-    const { sendInfo, fetchApi } = this.props;
+    const { sendInfo } = this.props;
     const { handleChange, verifyLogin, state } = this;
     return (
       <header className="App-header">
@@ -62,7 +62,6 @@ class Login extends Component {
               data-testid="btn-play"
               onClick={ () => {
                 sendInfo(state);
-                fetchApi();
               } }
               disabled={ !verifyLogin() }
             >
@@ -84,7 +83,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 Login.propTypes = {
   sendInfo: PropTypes.func.isRequired,
-  fetchApi: PropTypes.func.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(Login);
