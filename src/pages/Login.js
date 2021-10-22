@@ -6,7 +6,7 @@ import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
 import logo from '../trivia.png';
 import Button from '../components/Button/index';
 
-import './login.css';
+import '../index.css';
 
 class Login extends Component {
   constructor(props) {
