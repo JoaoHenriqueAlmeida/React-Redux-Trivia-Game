@@ -48,7 +48,11 @@ const mapStateToProps = (state) => ({
 Header.propTypes = {
   playerName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  score: PropTypes.string.isRequired,
+  score: PropTypes.string,
+};
+
+Header.defaultProps = {
+  score: 0,
 };
 
 export default connect(mapStateToProps, null)(Header);
