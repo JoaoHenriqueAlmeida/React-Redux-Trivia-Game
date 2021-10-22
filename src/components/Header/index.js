@@ -12,7 +12,7 @@ class Header extends Component {
       const profileImageGravatar = `https://www.gravatar.com/avatar/${hash}`;
       return profileImageGravatar;
     };
-    const { playerName, email } = this.props;
+    const { playerName, email, score } = this.props;
     const profileImage = imageGravatar(email);
     return (
       <header>
@@ -31,10 +31,9 @@ class Header extends Component {
           Score:
           {' '}
           <span data-testid="header-score">
-            0
+            { score }
           </span>
         </h3>
-
       </header>
     );
   }
@@ -43,11 +42,17 @@ class Header extends Component {
 const mapStateToProps = (state) => ({
   email: state.login.email,
   playerName: state.login.playerName,
+  score: state.login.score,
 });
 
 Header.propTypes = {
   playerName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
+  score: PropTypes.string,
+};
+
+Header.defaultProps = {
+  score: 0,
 };
 
 export default connect(mapStateToProps, null)(Header);

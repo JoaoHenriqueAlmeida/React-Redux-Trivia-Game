@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
 import Header from '../components/Header';
+import Timer from '../components/Timer';
 
 import './game.css';
 
@@ -13,14 +14,27 @@ class Game extends React.Component {
     this.state = {
       isBttnVisible: false,
       questionIndex: 0,
+      count: 30,
     };
 
     this.gameSection = this.gameSection.bind(this);
+    this.decreaseTime = this.decreaseTime.bind(this);
   }
 
   componentDidMount() {
     const { fetchApi } = this.props;
     fetchApi();
+  }
+
+  decreaseTime() {
+    const { count } = this.state;
+    if (count > 0) {
+      this.setState((prevState) => ({
+        count: prevState.count - 1,
+      }));
+    } else {
+      clearInterval();
+    }
   }
 
   toggleButtonVsibility() {
@@ -31,7 +45,7 @@ class Game extends React.Component {
 
   gameSection() {
     const { questions } = this.props;
-    const { questionIndex } = this.state;
+    const { questionIndex, count } = this.state;
     return (
       <section className="question-card">
         <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
@@ -43,6 +57,7 @@ class Game extends React.Component {
             type="button"
             key={ index }
             onClick={ () => this.setState({ isBttnVisible: true }) }
+            disabled={ (count === 0) }
           >
             { incorrectAnswer }
           </button>
@@ -53,6 +68,7 @@ class Game extends React.Component {
           type="button"
           key="3"
           onClick={ () => this.setState({ isBttnVisible: true }) }
+          disabled={ (count === 0) }
         >
           { questions[questionIndex].correct_answer }
         </button>
@@ -62,7 +78,7 @@ class Game extends React.Component {
 
   render() {
     const { loading } = this.props;
-    const { questionIndex, isBttnVisible } = this.state;
+    const { questionIndex, isBttnVisible, count } = this.state;
 
     if (loading) {
       return (
@@ -77,10 +93,12 @@ class Game extends React.Component {
       return (
         <div className="container">
           <Header />
+          <Timer count={ count } decreaseTime={ this.decreaseTime } />
           { this.gameSection() }
         </div>
       );
     }
+
     return (
       <div className="container">
         <Header />
