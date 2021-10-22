@@ -23,6 +23,7 @@ class Game extends React.Component {
   componentDidMount() {
     const { fetchApi } = this.props;
     fetchApi();
+    
   }
 
   nextQuestion() {
