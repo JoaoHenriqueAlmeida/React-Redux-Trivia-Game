@@ -11,7 +11,7 @@ class Game extends React.Component {
     super(props);
 
     this.state = {
-      isBtnVisible: false ,
+      isBtnVisible: false,
       questionIndex: 0,
     };
 
