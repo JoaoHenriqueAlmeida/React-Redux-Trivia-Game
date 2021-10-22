@@ -9,8 +9,13 @@ import './game.css';
 class Game extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      isBttnVisible: false,
+      questionIndex: 0,
     };
+
+    this.gameSection = this.gameSection.bind(this);
   }
 
   componentDidMount() {
@@ -18,8 +23,47 @@ class Game extends React.Component {
     fetchApi();
   }
 
+  toggleButtonVsibility() {
+    const { isBttnVisible } = this.state;
+    return isBttnVisible ? this.setState({ isBttnVisible: false })
+      : this.setState({ isBttnVisible: true });
+  }
+
+  gameSection() {
+    const { questions } = this.props;
+    const { questionIndex } = this.state;
+    return (
+      <section className="question-card">
+        <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
+        <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
+        {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+          <button
+            className="answer-btn-style"
+            data-testid={ `wrong-answer-${index}` }
+            type="button"
+            key={ index }
+            onClick={ () => this.setState({ isBttnVisible: true }) }
+          >
+            { incorrectAnswer }
+          </button>
+        ))}
+        <button
+          className="answer-btn-style"
+          data-testid="correct-answer"
+          type="button"
+          key="3"
+          onClick={ () => this.setState({ isBttnVisible: true }) }
+        >
+          { questions[questionIndex].correct_answer }
+        </button>
+      </section>
+    );
+  }
+
   render() {
-    const { questions, loading } = this.props;
+    const { loading } = this.props;
+    const { questionIndex, isBttnVisible } = this.state;
+
     if (loading) {
       return (
         <div className="container">
@@ -28,31 +72,26 @@ class Game extends React.Component {
         </div>
       );
     }
+
+    if (!isBttnVisible) {
+      return (
+        <div className="container">
+          <Header />
+          { this.gameSection() }
+        </div>
+      );
+    }
     return (
-      <div className="game-container">
+      <div className="container">
         <Header />
-        <section className="question-card">
-          <h3 data-testid="question-text">{questions[0].question}</h3>
-          <h4 data-testid="question-category">{questions[0].category}</h4>
-          {questions[0].incorrect_answers.map((incorrectAnswer, index) => (
-            <button
-              className="answer-btn-style"
-              data-testid={ `wrong-answer-${index}` }
-              type="button"
-              key={ index }
-            >
-              { incorrectAnswer }
-            </button>
-          ))}
-          <button
-            className="answer-btn-style"
-            data-testid="correct-answer"
-            type="button"
-            key="3"
-          >
-            { questions[0].correct_answer }
-          </button>
-        </section>
+        { this.gameSection() }
+        <button
+          type="button"
+          data-testid="btn-next"
+          onClick={ () => this.setState({ questionIndex: questionIndex + 1 }) }
+        >
+          Próxima
+        </button>
       </div>
     );
   }
