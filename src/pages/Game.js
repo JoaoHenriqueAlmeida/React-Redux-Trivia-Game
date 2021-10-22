@@ -35,11 +35,21 @@ class Game extends React.Component {
           <h3 data-testid="question-text">{questions[0].question}</h3>
           <h4 data-testid="question-category">{questions[0].category}</h4>
           {questions[0].incorrect_answers.map((incorrectAnswer, index) => (
-            <button className="answer-btn-style" data-testid={ `wrong-answer-${index}` } type="button" key={ index }>
+            <button
+              className="answer-btn-style"
+              data-testid={ `wrong-answer-${index}` }
+              type="button"
+              key={ index }
+            >
               { incorrectAnswer }
             </button>
           ))}
-          <button className="answer-btn-style" data-testid="correct-answer" type="button" key="3">
+          <button
+            className="answer-btn-style"
+            data-testid="correct-answer"
+            type="button"
+            key="3"
+          >
             { questions[0].correct_answer }
           </button>
         </section>
