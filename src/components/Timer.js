@@ -25,6 +25,7 @@ export default connect()(Timer);
 
 Timer.propTypes = {
   decreaseTime: PropTypes.func.isRequired,
+  count: PropTypes.number.isRequired,
 };
 
 Timer.defaultProps = {
