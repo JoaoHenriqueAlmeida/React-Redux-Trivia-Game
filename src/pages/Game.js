@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
 import Header from '../components/Header';
+import Timer from '../components/Timer';
 
 import '../index.css';
 
@@ -13,11 +14,13 @@ class Game extends React.Component {
     this.state = {
       isBtnVisible: false,
       questionIndex: 0,
+      count: 30,
     };
 
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
+    this.decreaseTime = this.decreaseTime.bind(this);
   }
 
   componentDidMount() {
@@ -53,9 +56,26 @@ class Game extends React.Component {
     });
   }
 
+  decreaseTime() {
+    const { count } = this.state;
+    if (count > 0) {
+      this.setState((prevState) => ({
+        count: prevState.count - 1,
+      }));
+    } else {
+      clearInterval();
+    }
+  }
+
+  // toggleButtonVisibility() {
+  //   const { isBtnVisible } = this.state;
+  //   return isBtnVisible ? this.setState({ isBtnVisible: false })
+  //     : this.setState({ isBtnVisible: true });
+  // }
+
   gameSection() {
     const { questions } = this.props;
-    const { questionIndex } = this.state;
+    const { questionIndex, count } = this.state;
     return (
       <div className="game-container">
         <section className="question-card">
@@ -67,6 +87,7 @@ class Game extends React.Component {
               data-testid={ `wrong-answer-${index}` }
               type="button"
               key={ index }
+              disabled={ (count === 0) }
               onClick={ () => {
                 this.setState({ isBtnVisible: true });
                 this.verifyCorrectAnswer();
@@ -84,6 +105,7 @@ class Game extends React.Component {
               this.setState({ isBtnVisible: true });
               this.verifyCorrectAnswer();
             } }
+            disabled={ (count === 0) }
           >
             { questions[questionIndex].correct_answer }
           </button>
@@ -94,7 +116,7 @@ class Game extends React.Component {
 
   render() {
     const { loading } = this.props;
-    const { isBtnVisible } = this.state;
+    const { isBtnVisible, count } = this.state;
 
     if (loading) {
       return (
@@ -109,10 +131,12 @@ class Game extends React.Component {
       return (
         <div>
           <Header />
+          <Timer count={ count } decreaseTime={ this.decreaseTime } />
           { this.gameSection() }
         </div>
       );
     }
+
     return (
       <div>
         <Header />
