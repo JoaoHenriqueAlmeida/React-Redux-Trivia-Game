@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
 import logo from '../trivia.png';
-import Button from '../components/Button';
+import Button from '../components/Button/index';
+
+import './login.css';
 
 class Login extends Component {
   constructor(props) {
@@ -39,7 +41,7 @@ class Login extends Component {
         <p>
           SUA VEZ
         </p>
-        <form action="">
+        <form className="form" action="">
           <input
             type="text"
             placeholder="Nome"
@@ -56,21 +58,23 @@ class Login extends Component {
             value={ email }
             onChange={ (e) => handleChange(e) }
           />
-          <Link to="/game">
-            <button
-              type="button"
-              data-testid="btn-play"
-              onClick={ () => {
-                sendInfo(state);
-              } }
-              disabled={ !verifyLogin() }
-            >
-              Jogar
-            </button>
-          </Link>
-          <Button />
+          <div>
+            <Link to="/game">
+              <button
+                className="btn-play btn-style"
+                type="button"
+                data-testid="btn-play"
+                onClick={ () => {
+                  sendInfo(state);
+                } }
+                disabled={ !verifyLogin() }
+              >
+                Jogar
+              </button>
+            </Link>
+            <Button />
+          </div>
         </form>
-
       </header>
     );
   }
