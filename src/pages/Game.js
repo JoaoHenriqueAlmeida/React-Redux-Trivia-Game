@@ -67,11 +67,11 @@ class Game extends React.Component {
     }
   }
 
-  // toggleButtonVisibility() {
-  //   const { isBtnVisible } = this.state;
-  //   return isBtnVisible ? this.setState({ isBtnVisible: false })
-  //     : this.setState({ isBtnVisible: true });
-  // }
+  resetTimer() {
+    this.setState({
+      count: 30,
+    });
+  }
 
   gameSection() {
     const { questions } = this.props;
@@ -79,6 +79,7 @@ class Game extends React.Component {
     return (
       <div className="game-container">
         <section className="question-card">
+          <Timer count={ count } decreaseTime={ this.decreaseTime } />
           <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
           <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
           {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
@@ -116,7 +117,7 @@ class Game extends React.Component {
 
   render() {
     const { loading } = this.props;
-    const { isBtnVisible, count } = this.state;
+    const { isBtnVisible } = this.state;
 
     if (loading) {
       return (
@@ -131,7 +132,6 @@ class Game extends React.Component {
       return (
         <div>
           <Header />
-          <Timer count={ count } decreaseTime={ this.decreaseTime } />
           { this.gameSection() }
         </div>
       );
@@ -146,7 +146,10 @@ class Game extends React.Component {
             className="btn-next"
             type="button"
             data-testid="btn-next"
-            onClick={ () => this.nextQuestion() }
+            onClick={ () => {
+              this.nextQuestion();
+              this.resetTimer();
+            } }
           >
             Próxima
           </button>
