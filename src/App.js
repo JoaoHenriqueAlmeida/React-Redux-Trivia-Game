@@ -6,7 +6,6 @@ import Login from './pages/Login';
 import Ranking from './pages/Ranking';
 import Config from './pages/Config';
 
-
 export default function App() {
   return (
     <Switch>
