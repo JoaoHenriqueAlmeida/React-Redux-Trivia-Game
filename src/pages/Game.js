@@ -5,25 +5,55 @@ import { fetchTokenAndQuestions } from '../Redux/actions';
 import Header from '../components/Header';
 import Timer from '../components/Timer';
 
-import './game.css';
+import '../index.css';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isBttnVisible: false,
+      isBtnVisible: false,
       questionIndex: 0,
       count: 30,
     };
 
     this.gameSection = this.gameSection.bind(this);
+    this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
     this.decreaseTime = this.decreaseTime.bind(this);
   }
 
   componentDidMount() {
     const { fetchApi } = this.props;
     fetchApi();
+  }
+
+  nextQuestion() {
+    const buttons = document.querySelectorAll('button');
+    const redBorder = 'red-border';
+    const greenBorder = 'green-border';
+    buttons.forEach((button) => {
+      if (button.classList.contains(redBorder)) {
+        button.classList.remove(redBorder);
+      }
+      if (button.classList.contains(greenBorder)) {
+        button.classList.remove(greenBorder);
+      }
+    });
+    const { questionIndex } = this.state;
+    this.setState({ questionIndex: questionIndex + 1 });
+  }
+
+  verifyCorrectAnswer() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => {
+      if (button.classList.contains('incorrect')) {
+        button.classList.add('red-border');
+      }
+      if (button.classList.contains('correct')) {
+        button.classList.add('green-border');
+      }
+    });
   }
 
   decreaseTime() {
@@ -37,79 +67,93 @@ class Game extends React.Component {
     }
   }
 
-  toggleButtonVsibility() {
-    const { isBttnVisible } = this.state;
-    return isBttnVisible ? this.setState({ isBttnVisible: false })
-      : this.setState({ isBttnVisible: true });
+  resetTimer() {
+    this.setState({
+      count: 30,
+    });
   }
 
   gameSection() {
     const { questions } = this.props;
     const { questionIndex, count } = this.state;
     return (
-      <section className="question-card">
-        <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
-        <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
-        {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+      <div className="game-container">
+        <section className="question-card">
+          <Timer count={ count } decreaseTime={ this.decreaseTime } />
+          <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
+          <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
+          {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+            <button
+              className="answer-btn-style incorrect"
+              data-testid={ `wrong-answer-${index}` }
+              type="button"
+              key={ index }
+              disabled={ (count === 0) }
+              onClick={ () => {
+                this.setState({ isBtnVisible: true });
+                this.verifyCorrectAnswer();
+              } }
+            >
+              { incorrectAnswer }
+            </button>
+          ))}
           <button
-            className="answer-btn-style"
-            data-testid={ `wrong-answer-${index}` }
+            className="answer-btn-style correct"
+            data-testid="correct-answer"
             type="button"
-            key={ index }
-            onClick={ () => this.setState({ isBttnVisible: true }) }
+            key="3"
+            onClick={ () => {
+              this.setState({ isBtnVisible: true });
+              this.verifyCorrectAnswer();
+            } }
             disabled={ (count === 0) }
           >
-            { incorrectAnswer }
+            { questions[questionIndex].correct_answer }
           </button>
-        ))}
-        <button
-          className="answer-btn-style"
-          data-testid="correct-answer"
-          type="button"
-          key="3"
-          onClick={ () => this.setState({ isBttnVisible: true }) }
-          disabled={ (count === 0) }
-        >
-          { questions[questionIndex].correct_answer }
-        </button>
-      </section>
+        </section>
+      </div>
     );
   }
 
   render() {
     const { loading } = this.props;
-    const { questionIndex, isBttnVisible, count } = this.state;
+    const { isBtnVisible } = this.state;
 
     if (loading) {
       return (
-        <div className="container">
+        <div>
           <Header />
-          <div>Loading</div>
+          <div className="game-container">Loading</div>
         </div>
       );
     }
 
-    if (!isBttnVisible) {
+    if (!isBtnVisible) {
       return (
-        <div className="container">
+        <div>
           <Header />
-          <Timer count={ count } decreaseTime={ this.decreaseTime } />
           { this.gameSection() }
         </div>
       );
     }
 
     return (
-      <div className="container">
+      <div>
         <Header />
         { this.gameSection() }
-        <button
-          type="button"
-          data-testid="btn-next"
-          onClick={ () => this.setState({ questionIndex: questionIndex + 1 }) }
-        >
-          Próxima
-        </button>
+        <div className="btn-center">
+          <button
+            className="btn-next"
+            type="button"
+            data-testid="btn-next"
+            onClick={ () => {
+              this.nextQuestion();
+              this.resetTimer();
+            } }
+          >
+            Próxima
+          </button>
+        </div>
       </div>
     );
   }
