@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
 import Header from '../components/Header';
+import Timer from '../components/Timer';
 
 import './game.css';
 
@@ -77,6 +78,7 @@ class Game extends React.Component {
       return (
         <div className="container">
           <Header />
+          <Timer />
           { this.gameSection() }
         </div>
       );
