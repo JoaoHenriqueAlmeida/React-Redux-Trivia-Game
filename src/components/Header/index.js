@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import md5 from 'crypto-js/md5';
 
-import './index.css';
-
 class Header extends Component {
   render() {
     const imageGravatar = (email) => {
@@ -15,8 +13,8 @@ class Header extends Component {
     const { playerName, email } = this.props;
     const profileImage = imageGravatar(email);
     return (
-      <header>
-        <div className="container">
+      <header className="header">
+        <div className="avatar-info">
           <img
             className="avatar"
             alt="Avatar perfil jogador"
@@ -34,7 +32,6 @@ class Header extends Component {
             0
           </span>
         </h3>
-
       </header>
     );
   }
