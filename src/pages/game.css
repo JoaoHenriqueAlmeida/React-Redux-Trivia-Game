@@ -1,0 +1,33 @@
+:root {
+
+  --dark-background: #282c34;
+
+  --white: #f1feff;
+
+}
+
+.game-container {
+  background-color: var(--dark-background);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.question-card {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-bottom: 15rem;
+  max-width: 60%;
+}
+
+.answer-btn-style {
+  background-color: var(--dark-background);
+  border-radius: 5px;
+  color: var(--white);
+  margin-top: 1rem;
+  min-width: 15rem;
+  padding: 0.4rem 0.6rem;
+}
