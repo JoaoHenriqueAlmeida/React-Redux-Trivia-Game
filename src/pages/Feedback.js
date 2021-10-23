@@ -8,6 +8,7 @@ class Feedback extends React.Component {
     return (
       <div>
         <Header />
+        <div>Bora que bora</div>
       </div>
     );
   }

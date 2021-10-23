@@ -66,7 +66,7 @@ code {
   flex-direction: column;
   max-width: 30rem;
   margin: auto;
-  padding: 6rem;
+  padding: 3rem;
 }
 
 .answer-btn-style {
@@ -74,7 +74,7 @@ code {
   border-radius: 5px;
   color: var(--white);
   padding: 0.4rem 0.6rem;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 }
 
 .btn-next {

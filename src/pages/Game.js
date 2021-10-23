@@ -4,23 +4,26 @@ import { connect } from 'react-redux';
 import { fetchTokenAndQuestions } from '../Redux/actions';
 import Header from '../components/Header';
 import Timer from '../components/Timer';
-
 import '../index.css';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isBtnVisible: false,
       questionIndex: 0,
       count: 30,
+      score: 0,
+      assertions: 0,
+      // questionsArray: [],
     };
-
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.decreaseTime = this.decreaseTime.bind(this);
+    this.calculateScore = this.calculateScore.bind(this);
+    this.saveOnStorage = this.saveOnStorage.bind(this);
+    this.removeBorder = this.removeBorder.bind(this);
   }
 
   componentDidMount() {
@@ -28,20 +31,9 @@ class Game extends React.Component {
     fetchApi();
   }
 
-  nextQuestion() {
-    const buttons = document.querySelectorAll('button');
-    const redBorder = 'red-border';
-    const greenBorder = 'green-border';
-    buttons.forEach((button) => {
-      if (button.classList.contains(redBorder)) {
-        button.classList.remove(redBorder);
-      }
-      if (button.classList.contains(greenBorder)) {
-        button.classList.remove(greenBorder);
-      }
-    });
-    const { questionIndex } = this.state;
-    this.setState({ questionIndex: questionIndex + 1 });
+  componentDidUpdate() {
+    const { saveOnStorage } = this;
+    saveOnStorage();
   }
 
   verifyCorrectAnswer() {
@@ -56,6 +48,34 @@ class Game extends React.Component {
     });
   }
 
+  removeBorder() {
+    const buttons = document.querySelectorAll('button');
+    const redBorder = 'red-border';
+    const greenBorder = 'green-border';
+    buttons.forEach((button) => {
+      if (button.classList.contains(redBorder)) {
+        button.classList.remove(redBorder);
+      }
+      if (button.classList.contains(greenBorder)) {
+        button.classList.remove(greenBorder);
+      }
+    });
+  }
+
+  resetTimer() { this.setState({ count: 30 }); }
+
+  nextQuestion() {
+    const { questionIndex } = this.state;
+    const { history } = this.props;
+    this.removeBorder();
+    this.resetTimer();
+    this.setState({ questionIndex: questionIndex + 1 });
+    const MAX_QUESTION = 4;
+    if (questionIndex >= MAX_QUESTION) {
+      history.push('/feedback');
+    }
+  }
+
   decreaseTime() {
     const { count } = this.state;
     if (count > 0) {
@@ -67,79 +87,112 @@ class Game extends React.Component {
     }
   }
 
-  resetTimer() {
-    this.setState({
-      count: 30,
-    });
+  calculateScore() {
+    const { count, questionIndex } = this.state;
+    const { questions } = this.props;
+    const { difficulty } = questions[questionIndex];
+    const MINIMUM_SCORE = 10;
+    const scoreChart = { easy: 1, medium: 2, hard: 3 };
+    if (difficulty === 'easy') {
+      this.setState(({ score, assertions }) => ({
+        score: score + (MINIMUM_SCORE + (count * scoreChart.easy)),
+        assertions: assertions + 1,
+      }));
+    }
+    if (difficulty === 'medium') {
+      this.setState(({ score, assertions }) => ({
+        score: score + (MINIMUM_SCORE + (count * scoreChart.medium)),
+        assertions: assertions + 1,
+      }));
+    }
+    if (difficulty === 'hard') {
+      this.setState(({ score, assertions }) => ({
+        score: score + (MINIMUM_SCORE + (count * scoreChart.hard)),
+        assertions: assertions + 1,
+      }));
+    }
+  }
+
+  saveOnStorage() {
+    const { name, gravatarEmail } = this.props;
+    const { assertions, score } = this.state;
+    localStorage.setItem('state', JSON.stringify({
+      player: {
+        name,
+        assertions,
+        score,
+        gravatarEmail,
+      },
+    }));
   }
 
   gameSection() {
     const { questions } = this.props;
-    const { questionIndex, count } = this.state;
+    const { questionIndex, count, score } = this.state;
+
     return (
-      <div className="game-container">
-        <section className="question-card">
-          <Timer count={ count } decreaseTime={ this.decreaseTime } />
-          <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
-          <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
-          {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+      <div>
+        <Header score={ score } />
+        <div className="game-container">
+          <section className="question-card">
+            <Timer count={ count } decreaseTime={ this.decreaseTime } />
+            <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
+            <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
+            {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+              <button
+                className="answer-btn-style incorrect"
+                data-testid={ `wrong-answer-${index}` }
+                type="button"
+                key={ index }
+                disabled={ (count === 0) }
+                onClick={ () => {
+                  this.setState({ isBtnVisible: true });
+                  this.verifyCorrectAnswer();
+                } }
+              >
+                { incorrectAnswer }
+              </button>
+            ))}
             <button
-              className="answer-btn-style incorrect"
-              data-testid={ `wrong-answer-${index}` }
+              className="answer-btn-style correct"
+              data-testid="correct-answer"
               type="button"
-              key={ index }
-              disabled={ (count === 0) }
+              key="3"
               onClick={ () => {
                 this.setState({ isBtnVisible: true });
                 this.verifyCorrectAnswer();
+                this.calculateScore();
               } }
+              disabled={ (count === 0) }
             >
-              { incorrectAnswer }
+              { questions[questionIndex].correct_answer }
             </button>
-          ))}
-          <button
-            className="answer-btn-style correct"
-            data-testid="correct-answer"
-            type="button"
-            key="3"
-            onClick={ () => {
-              this.setState({ isBtnVisible: true });
-              this.verifyCorrectAnswer();
-            } }
-            disabled={ (count === 0) }
-          >
-            { questions[questionIndex].correct_answer }
-          </button>
-        </section>
+          </section>
+        </div>
       </div>
     );
   }
 
   render() {
     const { loading } = this.props;
-    const { isBtnVisible } = this.state;
-
+    const { isBtnVisible, score } = this.state;
     if (loading) {
       return (
         <div>
-          <Header />
+          <Header score={ score } />
           <div className="game-container">Loading</div>
         </div>
       );
     }
-
     if (!isBtnVisible) {
       return (
         <div>
-          <Header />
           { this.gameSection() }
         </div>
       );
     }
-
     return (
       <div>
-        <Header />
         { this.gameSection() }
         <div className="btn-center">
           <button
@@ -148,7 +201,6 @@ class Game extends React.Component {
             data-testid="btn-next"
             onClick={ () => {
               this.nextQuestion();
-              this.resetTimer();
             } }
           >
             Próxima
@@ -158,21 +210,22 @@ class Game extends React.Component {
     );
   }
 }
-
-const mapStateToProps = ({ api: { questions, loading } }) => ({
-  questions,
-  loading,
+const mapStateToProps = ({ login, api }) => ({
+  name: login.name,
+  gravatarEmail: login.gravatarEmail,
+  questions: api.questions,
+  loading: api.loading,
 });
-
 const mapDispatchToProps = (dispatch) => ({
   fetchQuestionsAndAnswers: () => dispatch(fetchTokenAndQuestions()),
   fetchApi: () => dispatch(fetchTokenAndQuestions()),
 });
-
 Game.propTypes = {
   fetchApi: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   questions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

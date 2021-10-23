@@ -1,8 +1,8 @@
 import { SEND_LOGIN_INFO } from '../actions';
 
 const INITIAL_STATE = {
-  email: '',
-  playerName: '',
+  gravatarEmail: '',
+  name: '',
 };
 
 function userInformation(state = INITIAL_STATE, action) {
@@ -10,8 +10,8 @@ function userInformation(state = INITIAL_STATE, action) {
   case SEND_LOGIN_INFO:
     return ({
       ...state,
-      email: action.loginInfo.email,
-      playerName: action.loginInfo.playerName,
+      gravatarEmail: action.loginInfo.gravatarEmail,
+      name: action.loginInfo.name,
     });
   default:
     return state;
