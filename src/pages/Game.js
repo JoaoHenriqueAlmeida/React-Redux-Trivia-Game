@@ -15,7 +15,6 @@ class Game extends React.Component {
       count: 30,
       score: 0,
       assertions: 0,
-      // questionsArray: [],
     };
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
@@ -24,6 +23,7 @@ class Game extends React.Component {
     this.calculateScore = this.calculateScore.bind(this);
     this.saveOnStorage = this.saveOnStorage.bind(this);
     this.removeBorder = this.removeBorder.bind(this);
+    this.saveToRanking = this.saveToRanking.bind(this);
   }
 
   componentDidMount() {
@@ -36,6 +36,7 @@ class Game extends React.Component {
   componentDidUpdate() {
     const { saveOnStorage } = this;
     saveOnStorage();
+    localStorage.setItem('ranking', JSON.stringify(''));
   }
 
   verifyCorrectAnswer() {
@@ -66,6 +67,21 @@ class Game extends React.Component {
 
   resetTimer() { this.setState({ count: 30 }); }
 
+  saveToRanking() {
+    const getLocal = JSON.parse(localStorage.getItem('state'));
+    const getRanking = Object.entries(JSON.parse(localStorage.getItem('ranking')));
+    const { name, score, gravatarEmail } = getLocal.player;
+    getRanking.push({
+      name,
+      score,
+      gravatarEmail,
+    });
+    console.log(getRanking);
+    const newRanking = getRanking.sort((a, b) => b.score - a.score);
+    const whatever = Object.fromEntries(newRanking);
+    localStorage.setItem('ranking', JSON.stringify(whatever));
+  }
+
   nextQuestion() {
     const { questionIndex } = this.state;
     const { history } = this.props;
@@ -74,6 +90,7 @@ class Game extends React.Component {
     this.setState({ questionIndex: questionIndex + 1 });
     const MAX_QUESTION = 4;
     if (questionIndex >= MAX_QUESTION) {
+      this.saveToRanking();
       history.push('/feedback');
     }
   }
@@ -225,14 +242,7 @@ const mapDispatchToProps = (dispatch) => ({
 Game.propTypes = {
   fetchApi: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  questions: PropTypes.arrayOf(PropTypes.shape({
-    category: PropTypes.string,
-    correct_answer: PropTypes.string,
-    difficulty: PropTypes.string,
-    incorrect_answers: PropTypes.arrayOf(PropTypes.string),
-    question: PropTypes.string,
-    type: PropTypes.string,
-  })).isRequired,
+  questions: PropTypes.arrayOf(PropTypes.any).isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import RankingButton from '../components/RankingButton';
+import PlayAgain from '../components/PlayAgain';
 import RankingRows from '../components/RankingRows';
 
 class Ranking extends React.Component {
@@ -24,14 +24,14 @@ class Ranking extends React.Component {
         <div>
           { JSON.parse(ranking).map((rankingRow) => (
             <RankingRows
-              key={ rankingRow.id }
+              key={ rankingRow.index }
               name={ rankingRow.name }
-              picture={ rankingRow.picture }
+              picture={ rankingRow.gravatarEmail }
               score={ rankingRow.score }
             />
           ))}
         </div>
-        <RankingButton
+        <PlayAgain
           id="btn-go-home"
           label="Início"
           onClick={ this.handleClick }
