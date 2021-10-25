@@ -23,7 +23,7 @@ class Game extends React.Component {
     this.calculateScore = this.calculateScore.bind(this);
     this.saveOnStorage = this.saveOnStorage.bind(this);
     this.removeBorder = this.removeBorder.bind(this);
-    this.saveToRanking = this.saveToRanking.bind(this);
+    // this.saveToRanking = this.saveToRanking.bind(this);
   }
 
   componentDidMount() {
@@ -65,20 +65,20 @@ class Game extends React.Component {
 
   resetTimer() { this.setState({ count: 30 }); }
 
-  saveToRanking() {
-    const getLocal = JSON.parse(localStorage.getItem('state'));
-    const getRanking = JSON.parse(localStorage.getItem('ranking'));
-    const { name, score, gravatarEmail } = getLocal.player;
-    Object.entries(getRanking).push({
-      name,
-      score,
-      gravatarEmail,
-    });
-    console.log(getRanking);
-    const newRanking = getRanking.sort((a, b) => b.score - a.score);
-    const whatever = Object.fromEntries(newRanking);
-    localStorage.setItem('ranking', JSON.stringify(whatever));
-  }
+  // saveToRanking() {
+  //   const getLocal = JSON.parse(localStorage.getItem('state'));
+  //   const getRanking = JSON.parse(localStorage.getItem('ranking'));
+  //   const { name, score, gravatarEmail } = getLocal.player;
+  //   Object.entries(getRanking).push({
+  //     name,
+  //     score,
+  //     gravatarEmail,
+  //   });
+  //   console.log(getRanking);
+  //   const newRanking = getRanking.sort((a, b) => b.score - a.score);
+  //   const whatever = Object.fromEntries(newRanking);
+  //   localStorage.setItem('ranking', JSON.stringify(whatever));
+  // }
 
   nextQuestion() {
     const { questionIndex } = this.state;
@@ -88,7 +88,7 @@ class Game extends React.Component {
     this.setState({ questionIndex: questionIndex + 1 });
     const MAX_QUESTION = 4;
     if (questionIndex >= MAX_QUESTION) {
-      this.saveToRanking();
+      // this.saveToRanking();
       history.push('/feedback');
     }
   }
