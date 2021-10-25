@@ -12,8 +12,8 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      playerName: '',
+      gravatarEmail: '',
+      name: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.verifyLogin = this.verifyLogin.bind(this);
@@ -26,13 +26,13 @@ class Login extends Component {
   }
 
   verifyLogin() {
-    const { email, playerName } = this.state;
+    const { gravatarEmail, name } = this.state;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email) && playerName.length !== 0;
+    return emailRegex.test(gravatarEmail) && name.length !== 0;
   }
 
   render() {
-    const { email, playerName } = this.state;
+    const { gravatarEmail, name } = this.state;
     const { sendInfo } = this.props;
     const { handleChange, verifyLogin, state } = this;
     return (
@@ -46,16 +46,16 @@ class Login extends Component {
             type="text"
             placeholder="Nome"
             data-testid="input-player-name"
-            name="playerName"
-            value={ playerName }
+            name="name"
+            value={ name }
             onChange={ (e) => handleChange(e) }
           />
           <input
             type="email"
             placeholder="Email"
             data-testid="input-gravatar-email"
-            name="email"
-            value={ email }
+            name="gravatarEmail"
+            value={ gravatarEmail }
             onChange={ (e) => handleChange(e) }
           />
           <div>

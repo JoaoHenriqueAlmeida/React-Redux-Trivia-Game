@@ -5,13 +5,13 @@ import md5 from 'crypto-js/md5';
 
 class Header extends Component {
   render() {
-    const imageGravatar = (email) => {
-      const hash = md5(email).toString();
+    const imageGravatar = (gravatarEmail) => {
+      const hash = md5(gravatarEmail).toString();
       const profileImageGravatar = `https://www.gravatar.com/avatar/${hash}`;
       return profileImageGravatar;
     };
-    const { playerName, email, score } = this.props;
-    const profileImage = imageGravatar(email);
+    const { name, gravatarEmail, score } = this.props;
+    const profileImage = imageGravatar(gravatarEmail);
     return (
       <header className="header">
         <div className="avatar-info">
@@ -22,7 +22,7 @@ class Header extends Component {
             src={ profileImage }
           />
           <h3 className="player-name" data-testid="header-player-name">
-            { playerName }
+            { name }
           </h3>
         </div>
         <h3 className="score">
@@ -37,20 +37,15 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  email: state.login.email,
-  playerName: state.login.playerName,
-  score: state.login.score,
+const mapStateToProps = ({ login: { name, gravatarEmail } }) => ({
+  gravatarEmail,
+  name,
 });
 
 Header.propTypes = {
-  playerName: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  score: PropTypes.string,
-};
-
-Header.defaultProps = {
-  score: 0,
+  name: PropTypes.string.isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps, null)(Header);
