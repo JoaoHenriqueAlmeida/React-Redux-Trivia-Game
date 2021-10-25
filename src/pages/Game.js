@@ -28,14 +28,12 @@ class Game extends React.Component {
 
   componentDidMount() {
     const { fetchApi } = this.props;
-    const { saveOnStorage } = this;
-    saveOnStorage();
+    this.saveOnStorage();
     fetchApi();
   }
 
   componentDidUpdate() {
-    const { saveOnStorage } = this;
-    saveOnStorage();
+    this.saveOnStorage();
     localStorage.setItem('ranking', JSON.stringify(''));
   }
 
@@ -69,9 +67,9 @@ class Game extends React.Component {
 
   saveToRanking() {
     const getLocal = JSON.parse(localStorage.getItem('state'));
-    const getRanking = Object.entries(JSON.parse(localStorage.getItem('ranking')));
+    const getRanking = JSON.parse(localStorage.getItem('ranking'));
     const { name, score, gravatarEmail } = getLocal.player;
-    getRanking.push({
+    Object.entries(getRanking).push({
       name,
       score,
       gravatarEmail,
