@@ -28,6 +28,8 @@ class Game extends React.Component {
 
   componentDidMount() {
     const { fetchApi } = this.props;
+    const { saveOnStorage } = this;
+    saveOnStorage();
     fetchApi();
   }
 
@@ -116,13 +118,13 @@ class Game extends React.Component {
   saveOnStorage() {
     const { name, gravatarEmail } = this.props;
     const { assertions, score } = this.state;
-    localStorage.setItem('state', JSON.stringify({
-      player: {
-        name,
-        assertions,
-        score,
-        gravatarEmail,
-      },
+
+    localStorage.setItem('state', JSON.stringify({ player: {
+      name,
+      assertions,
+      score,
+      gravatarEmail,
+    },
     }));
   }
 
@@ -223,7 +225,14 @@ const mapDispatchToProps = (dispatch) => ({
 Game.propTypes = {
   fetchApi: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  questions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  questions: PropTypes.arrayOf(PropTypes.shape({
+    category: PropTypes.string,
+    correct_answer: PropTypes.string,
+    difficulty: PropTypes.string,
+    incorrect_answers: PropTypes.arrayOf(PropTypes.string),
+    question: PropTypes.string,
+    type: PropTypes.string,
+  })).isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
