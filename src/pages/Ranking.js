@@ -21,12 +21,14 @@ class Ranking extends React.Component {
     const ranking = localStorage.getItem('ranking');
     return (
       <section>
+        <h3 data-testid="ranking-title">Ranking</h3>
         <div>
-          { JSON.parse(ranking).map((rankingRow) => (
+          { JSON.parse(ranking).map((rankingRow, index) => (
             <RankingRows
-              key={ rankingRow.index }
+              key={ index }
+              index={ index }
               name={ rankingRow.name }
-              picture={ rankingRow.gravatarEmail }
+              gravatarEmail={ rankingRow.gravatarEmail }
               score={ rankingRow.score }
             />
           ))}

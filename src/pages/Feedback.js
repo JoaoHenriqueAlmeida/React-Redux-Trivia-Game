@@ -97,6 +97,7 @@ class Feedback extends React.Component {
     if (assertions >= MINIMUM_SCORE) return <>{ goodFeedback() }</>;
     if (assertions < MINIMUM_SCORE) return <>{ badFeedback() }</>;
   }
+
 }
 
 Feedback.propTypes = {
