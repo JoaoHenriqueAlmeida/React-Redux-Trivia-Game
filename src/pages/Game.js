@@ -68,19 +68,6 @@ class Game extends React.Component {
 
   resetTimer() { this.setState({ count: 30 }); }
 
-  saveToRanking() {
-    const getLocal = JSON.parse(localStorage.getItem('state'));
-    const getRanking = JSON.parse(localStorage.getItem('ranking'));
-    const { name, score, gravatarEmail } = getLocal.player;
-    getRanking.push({
-      name,
-      score,
-      gravatarEmail,
-    });
-    const sorting = getRanking.sort((a, b) => b.score - a.score);
-    localStorage.setItem('ranking', JSON.stringify(sorting));
-  }
-
   nextQuestion() {
     const { questionIndex } = this.state;
     const { history } = this.props;
@@ -142,6 +129,19 @@ class Game extends React.Component {
       gravatarEmail,
     },
     }));
+  }
+
+  saveToRanking() {
+    const getLocal = JSON.parse(localStorage.getItem('state'));
+    const getRanking = JSON.parse(localStorage.getItem('ranking'));
+    const { name, score, gravatarEmail } = getLocal.player;
+    getRanking.push({
+      name,
+      score,
+      gravatarEmail,
+    });
+    const sorting = getRanking.sort((a, b) => b.score - a.score);
+    localStorage.setItem('ranking', JSON.stringify(sorting));
   }
 
   gameSection() {
