@@ -176,7 +176,7 @@ class Game extends React.Component {
     const { isBtnVisible, score, questionIndex, count } = this.state;
 
     if (!loading) {
-      // const { gabiru, silveira, kilua, Kauan } = JSON.parse(minhaVida)
+      // const { Gabiru, Silveira, Kilua, Kauan } = JSON.parse(minhaVida)
       const question = questions[questionIndex];
       const allAnswers = [question.correct_answer, ...question.incorrect_answers];
       return (
