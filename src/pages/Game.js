@@ -15,7 +15,6 @@ class Game extends React.Component {
       count: 30,
       score: 0,
       assertions: 0,
-      // questionsArray: [],
     };
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
@@ -24,18 +23,21 @@ class Game extends React.Component {
     this.calculateScore = this.calculateScore.bind(this);
     this.saveOnStorage = this.saveOnStorage.bind(this);
     this.removeBorder = this.removeBorder.bind(this);
+    this.saveToRanking = this.saveToRanking.bind(this);
   }
 
   componentDidMount() {
     const { fetchApi } = this.props;
-    const { saveOnStorage } = this;
-    saveOnStorage();
+    this.saveOnStorage();
     fetchApi();
+    const ranking = localStorage.getItem('ranking');
+    if (!ranking) {
+      localStorage.setItem('ranking', JSON.stringify([]));
+    }
   }
 
   componentDidUpdate() {
-    const { saveOnStorage } = this;
-    saveOnStorage();
+    this.saveOnStorage();
   }
 
   verifyCorrectAnswer() {
@@ -66,6 +68,19 @@ class Game extends React.Component {
 
   resetTimer() { this.setState({ count: 30 }); }
 
+  saveToRanking() {
+    const getLocal = JSON.parse(localStorage.getItem('state'));
+    const getRanking = JSON.parse(localStorage.getItem('ranking'));
+    const { name, score, gravatarEmail } = getLocal.player;
+    getRanking.push({
+      name,
+      score,
+      gravatarEmail,
+    });
+    const sorting = getRanking.sort((a, b) => b.score - a.score);
+    localStorage.setItem('ranking', JSON.stringify(sorting));
+  }
+
   nextQuestion() {
     const { questionIndex } = this.state;
     const { history } = this.props;
@@ -75,6 +90,7 @@ class Game extends React.Component {
     const MAX_QUESTION = 4;
     if (questionIndex >= MAX_QUESTION) {
       history.push('/feedback');
+      this.saveToRanking();
     }
   }
 
@@ -225,14 +241,7 @@ const mapDispatchToProps = (dispatch) => ({
 Game.propTypes = {
   fetchApi: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  questions: PropTypes.arrayOf(PropTypes.shape({
-    category: PropTypes.string,
-    correct_answer: PropTypes.string,
-    difficulty: PropTypes.string,
-    incorrect_answers: PropTypes.arrayOf(PropTypes.string),
-    question: PropTypes.string,
-    type: PropTypes.string,
-  })).isRequired,
+  questions: PropTypes.arrayOf(PropTypes.any).isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,

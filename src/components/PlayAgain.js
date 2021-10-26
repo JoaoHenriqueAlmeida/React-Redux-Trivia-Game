@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class RankingButton extends React.Component {
+class PlayAgain extends React.Component {
   render() {
     const { id, label, onClick } = this.props;
     return (
@@ -16,10 +16,10 @@ class RankingButton extends React.Component {
   }
 }
 
-RankingButton.propTypes = {
+PlayAgain.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 
-export default RankingButton;
+export default PlayAgain;
