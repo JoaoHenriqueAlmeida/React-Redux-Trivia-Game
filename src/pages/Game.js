@@ -17,7 +17,6 @@ class Game extends React.Component {
       count: 30,
       score: 0,
       assertions: 0,
-      questionsApi: [],
     };
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
@@ -43,7 +42,7 @@ class Game extends React.Component {
     this.saveOnStorage();
   }
 
-  verifyCorrectAnswer(value) {
+  verifyCorrectAnswer() {
     const buttons = document.querySelectorAll('button');
     buttons.forEach((button) => {
       if (button.value === (correctAnswer)) {
@@ -152,13 +151,6 @@ class Game extends React.Component {
   gameSection(answer, answerIndex, question) {
     const { count } = this.state;
     return (
-      // <div>
-      //   <Header score={ score } />
-      //   <div className="game-container">
-      //     <section className="question-card">
-      //       <Timer count={ count } decreaseTime={ this.decreaseTime } />
-      //       <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
-      //       <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
       <button
         className="answer-btn-style incorrect"
         type="button"
@@ -176,9 +168,6 @@ class Game extends React.Component {
       >
         { answer }
       </button>
-      //     </section>
-      //   </div>
-      // </div>
     );
   }
 
@@ -187,6 +176,7 @@ class Game extends React.Component {
     const { isBtnVisible, score, questionIndex, count } = this.state;
 
     if (!loading) {
+      // const { gabiru, silveira, kilua, Kauan } = JSON.parse(minhaVida)
       const question = questions[questionIndex];
       const allAnswers = [question.correct_answer, ...question.incorrect_answers];
       return (
