@@ -6,6 +6,7 @@ class Redirect extends React.Component {
     const { onClick } = this.props;
     return (
       <button
+        className="btn-style btn-margin"
         data-testid="btn-ranking"
         type="button"
         onClick={ onClick }

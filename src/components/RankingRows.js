@@ -20,11 +20,17 @@ class RankingRows extends React.Component {
     const { index, name, gravatarEmail, score } = this.props;
     const imageGravatar = this.imageGravatar(gravatarEmail);
     return (
-      <div>
-        <img src={ imageGravatar } alt={ name } />
-        <span data-testid={ `player-name-${index}` }>{ name }</span>
-        <span data-testid={ `player-score-${index}` }>{ score }</span>
-      </div>
+      <>
+        <div className="ranking-row">
+          <div className="ranking-position">
+            <span className="ranking-position-number">{ `${index + 1}°`}</span>
+            <img className="avatar" src={ imageGravatar } alt={ name } />
+          </div>
+          <span data-testid={ `player-name-${index}` }>{ name }</span>
+          <span data-testid={ `player-score-${index}` }>{ score }</span>
+        </div>
+        <hr />
+      </>
     );
   }
 }
