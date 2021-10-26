@@ -36,39 +36,48 @@ class Feedback extends React.Component {
   displayFeedBackContent() {
     const getLocal = JSON.parse(localStorage.getItem('state'));
     const { score, assertions } = getLocal.player;
-    const { id, label } = this.state;
-    const { handleClick, redirectRanking } = this;
 
     return (
-      <>
-        <div>
-          Você acertou
-          {' '}
-          <span data-testid="feedback-total-question">{ assertions }</span>
-          {' '}
-          perguntas e fez
-          {' '}
-          <span data-testid="feedback-total-score">{ score }</span>
-          {' '}
-          Pontos!
-        </div>
-        <PlayAgain id={ id } label={ label } onClick={ handleClick } />
-        <Redirect onClick={ redirectRanking } />
-      </>
+      <div>
+        Você acertou
+        {' '}
+        <span data-testid="feedback-total-question">{ assertions }</span>
+        {' '}
+        perguntas e fez
+        {' '}
+        <span data-testid="feedback-total-score">{ score }</span>
+        {' '}
+        Pontos!
+      </div>
     );
   }
 
   goodFeedback() {
     const getLocal = JSON.parse(localStorage.getItem('state'));
     const { score } = getLocal.player;
+    const { id, label } = this.state;
+    const { handleClick, redirectRanking } = this;
     const { displayFeedBackContent } = this;
     const notThatBad = 'Mandou bem!';
 
     return (
       <>
         <Header score={ score } />
-        <div data-testid="feedback-text">{ notThatBad }</div>
-        { displayFeedBackContent() }
+        <div className="feedback-container">
+          <div className="feedback-card">
+            <div data-testid="feedback-text">{ notThatBad }</div>
+            { displayFeedBackContent() }
+            <img
+              className="feedback-img"
+              src="https://media1.giphy.com/media/jJQC2puVZpTMO4vUs0/giphy.gif?cid=790b7611d9a32fe32ab6fd098ac35b7d63f03d902e83e965&rid=giphy.gif&ct=g"
+              alt="Imagem que mostra Dwight comemorando"
+            />
+            <div className="feedback-buttons">
+              <PlayAgain id={ id } label={ label } onClick={ handleClick } />
+              <Redirect onClick={ redirectRanking } />
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -76,14 +85,29 @@ class Feedback extends React.Component {
   badFeedback() {
     const getLocal = JSON.parse(localStorage.getItem('state'));
     const { score } = getLocal.player;
+    const { id, label } = this.state;
+    const { handleClick, redirectRanking } = this;
     const { displayFeedBackContent } = this;
     const getBetterNoob = 'Podia ser melhor...';
 
     return (
       <>
         <Header score={ score } />
-        <div data-testid="feedback-text">{ getBetterNoob }</div>
-        { displayFeedBackContent() }
+        <div className="feedback-container">
+          <div className="feedback-card">
+            <div data-testid="feedback-text">{ getBetterNoob }</div>
+            { displayFeedBackContent() }
+            <img
+              className="feedback-img"
+              src="https://media2.giphy.com/media/RGaxGKy85cqztyMQOw/giphy.gif?cid=ecf05e47se63nxoejw25uemqcqjs40hl86pf6vuptjzhi1x5&rid=giphy.gif&ct=g"
+              alt="Imagem que mostra Dwight comemorando"
+            />
+            <div className="feedback-buttons">
+              <PlayAgain id={ id } label={ label } onClick={ handleClick } />
+              <Redirect onClick={ redirectRanking } />
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -97,7 +121,6 @@ class Feedback extends React.Component {
     if (assertions >= MINIMUM_SCORE) return <>{ goodFeedback() }</>;
     if (assertions < MINIMUM_SCORE) return <>{ badFeedback() }</>;
   }
-
 }
 
 Feedback.propTypes = {

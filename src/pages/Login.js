@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { GiConsoleController, GiTimeBomb, GiTrophyCup } from 'react-icons/gi';
 import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
 import logo from '../trivia.png';
 import Button from '../components/Button/index';
@@ -17,6 +18,7 @@ class Login extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.verifyLogin = this.verifyLogin.bind(this);
+    this.renderButton = this.renderButton.bind(this);
   }
 
   handleChange({ target: { value, name } }) {
@@ -31,16 +33,34 @@ class Login extends Component {
     return emailRegex.test(gravatarEmail) && name.length !== 0;
   }
 
+  renderButton() {
+    const { sendInfo } = this.props;
+    const { verifyLogin, state } = this;
+    return (
+      <Link to="/game" style={ { textDecoration: 'none' } }>
+        <button
+          className="btn-play btn-style"
+          type="button"
+          data-testid="btn-play"
+          onClick={ () => {
+            sendInfo(state);
+          } }
+          disabled={ !verifyLogin() }
+        >
+          <GiConsoleController size="18" />
+          <p className="button-text">Jogar</p>
+        </button>
+      </Link>
+    );
+  }
+
   render() {
     const { gravatarEmail, name } = this.state;
-    const { sendInfo } = this.props;
-    const { handleChange, verifyLogin, state } = this;
+    const { handleChange } = this;
     return (
       <header className="App-header">
         <img src={ logo } className="App-logo" alt="logo" />
-        <p>
-          SUA VEZ
-        </p>
+        <GiTimeBomb className="icon-spacer App-logo-mini" size="60" />
         <form className="form" action="">
           <input
             type="text"
@@ -58,23 +78,14 @@ class Login extends Component {
             value={ gravatarEmail }
             onChange={ (e) => handleChange(e) }
           />
-          <div>
-            <Link to="/game">
-              <button
-                className="btn-play btn-style"
-                type="button"
-                data-testid="btn-play"
-                onClick={ () => {
-                  sendInfo(state);
-                } }
-                disabled={ !verifyLogin() }
-              >
-                Jogar
-              </button>
-            </Link>
+          <div className="buttons-div">
+            { this.renderButton() }
             <Button />
           </div>
         </form>
+        <Link to="/ranking" className="no-decoration">
+          <GiTrophyCup className="ranking-link" size="50" />
+        </Link>
       </header>
     );
   }
