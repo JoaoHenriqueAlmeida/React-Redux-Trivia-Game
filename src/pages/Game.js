@@ -6,6 +6,8 @@ import Header from '../components/Header';
 import Timer from '../components/Timer';
 import '../index.css';
 
+const correctAnswer = 'correct-answer';
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +17,7 @@ class Game extends React.Component {
       count: 30,
       score: 0,
       assertions: 0,
+      questionsApi: [],
     };
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
@@ -40,14 +43,14 @@ class Game extends React.Component {
     this.saveOnStorage();
   }
 
-  verifyCorrectAnswer() {
+  verifyCorrectAnswer(value) {
     const buttons = document.querySelectorAll('button');
     buttons.forEach((button) => {
-      if (button.classList.contains('incorrect')) {
-        button.classList.add('red-border');
-      }
-      if (button.classList.contains('correct')) {
+      if (button.value === (correctAnswer)) {
         button.classList.add('green-border');
+      }
+      if (button.value === ('wrong-answer')) {
+        button.classList.add('red-border');
       }
     });
   }
@@ -92,29 +95,31 @@ class Game extends React.Component {
     }
   }
 
-  calculateScore() {
+  calculateScore(value) {
     const { count, questionIndex } = this.state;
     const { questions } = this.props;
     const { difficulty } = questions[questionIndex];
     const MINIMUM_SCORE = 10;
     const scoreChart = { easy: 1, medium: 2, hard: 3 };
-    if (difficulty === 'easy') {
-      this.setState(({ score, assertions }) => ({
-        score: score + (MINIMUM_SCORE + (count * scoreChart.easy)),
-        assertions: assertions + 1,
-      }));
-    }
-    if (difficulty === 'medium') {
-      this.setState(({ score, assertions }) => ({
-        score: score + (MINIMUM_SCORE + (count * scoreChart.medium)),
-        assertions: assertions + 1,
-      }));
-    }
-    if (difficulty === 'hard') {
-      this.setState(({ score, assertions }) => ({
-        score: score + (MINIMUM_SCORE + (count * scoreChart.hard)),
-        assertions: assertions + 1,
-      }));
+    if (value === correctAnswer) {
+      if (difficulty === 'easy') {
+        this.setState(({ score, assertions }) => ({
+          score: score + (MINIMUM_SCORE + (count * scoreChart.easy)),
+          assertions: assertions + 1,
+        }));
+      }
+      if (difficulty === 'medium') {
+        this.setState(({ score, assertions }) => ({
+          score: score + (MINIMUM_SCORE + (count * scoreChart.medium)),
+          assertions: assertions + 1,
+        }));
+      }
+      if (difficulty === 'hard') {
+        this.setState(({ score, assertions }) => ({
+          score: score + (MINIMUM_SCORE + (count * scoreChart.hard)),
+          assertions: assertions + 1,
+        }));
+      }
     }
   }
 
@@ -144,90 +149,84 @@ class Game extends React.Component {
     localStorage.setItem('ranking', JSON.stringify(sorting));
   }
 
-  gameSection() {
-    const { questions } = this.props;
-    const { questionIndex, count, score } = this.state;
-
+  gameSection(answer, answerIndex, question) {
+    const { count } = this.state;
     return (
-      <div>
-        <Header score={ score } />
-        <div className="game-container">
-          <section className="question-card">
-            <Timer count={ count } decreaseTime={ this.decreaseTime } />
-            <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
-            <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
-            {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
-              <button
-                className="answer-btn-style incorrect"
-                data-testid={ `wrong-answer-${index}` }
-                type="button"
-                key={ index }
-                disabled={ (count === 0) }
-                onClick={ () => {
-                  this.setState({ isBtnVisible: true });
-                  this.verifyCorrectAnswer();
-                } }
-              >
-                { incorrectAnswer }
-              </button>
-            ))}
-            <button
-              className="answer-btn-style correct"
-              data-testid="correct-answer"
-              type="button"
-              key="3"
-              onClick={ () => {
-                this.setState({ isBtnVisible: true });
-                this.verifyCorrectAnswer();
-                this.calculateScore();
-              } }
-              disabled={ (count === 0) }
-            >
-              { questions[questionIndex].correct_answer }
-            </button>
-          </section>
-        </div>
-      </div>
+      // <div>
+      //   <Header score={ score } />
+      //   <div className="game-container">
+      //     <section className="question-card">
+      //       <Timer count={ count } decreaseTime={ this.decreaseTime } />
+      //       <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
+      //       <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
+      <button
+        className="answer-btn-style incorrect"
+        type="button"
+        key={ answerIndex }
+        disabled={ (count === 0) }
+        onClick={ ({ target: { value } }) => {
+          this.setState({ isBtnVisible: true });
+          this.verifyCorrectAnswer();
+          this.calculateScore(value);
+        } }
+        value={ question.correct_answer === answer
+          ? correctAnswer : 'wrong-answer' }
+        data-testid={ question.correct_answer === answer
+          ? correctAnswer : `wrong-answer-${answerIndex}` }
+      >
+        { answer }
+      </button>
+      //     </section>
+      //   </div>
+      // </div>
     );
   }
 
   render() {
-    const { loading } = this.props;
-    const { isBtnVisible, score } = this.state;
-    if (loading) {
+    const { loading, questions } = this.props;
+    const { isBtnVisible, score, questionIndex, count } = this.state;
+
+    if (!loading) {
+      const question = questions[questionIndex];
+      const allAnswers = [question.correct_answer, ...question.incorrect_answers];
       return (
         <div>
           <Header score={ score } />
-          <div className="game-container">Loading</div>
-        </div>
-      );
-    }
-    if (!isBtnVisible) {
-      return (
-        <div>
-          { this.gameSection() }
+          <div className="game-container">
+            <section className="question-card">
+              <Timer count={ count } decreaseTime={ this.decreaseTime } />
+              <h3 data-testid="question-text">{ question.question }</h3>
+              <h4 data-testid="question-category">{ question.category }</h4>
+              {allAnswers.sort().map((answer, answerIndex) => (
+                this.gameSection(answer, answerIndex, question)
+              ))}
+              {isBtnVisible
+                  && (
+                    <div className="btn-center">
+                      <button
+                        className="btn-next"
+                        type="button"
+                        data-testid="btn-next"
+                        onClick={ () => { this.nextQuestion(); } }
+                      >
+                        Próxima
+                      </button>
+                    </div>
+                  ) }
+            </section>
+          </div>
         </div>
       );
     }
     return (
       <div>
-        { this.gameSection() }
-        <div className="btn-center">
-          <button
-            className="btn-next"
-            type="button"
-            data-testid="btn-next"
-            onClick={ () => {
-              this.nextQuestion();
-            } }
-          >
-            Próxima
-          </button>
-        </div>
+        <Header score={ score } />
+        <div className="game-container">Loading</div>
       </div>
     );
   }
 }
+
 const mapStateToProps = ({ login, api }) => ({
   name: login.name,
   gravatarEmail: login.gravatarEmail,

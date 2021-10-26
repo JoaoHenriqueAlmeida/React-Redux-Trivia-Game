@@ -6,8 +6,6 @@ import Header from '../components/Header';
 import Timer from '../components/Timer';
 import '../index.css';
 
-const correctAnswer = 'correct-answer';
-
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +15,6 @@ class Game extends React.Component {
       count: 30,
       score: 0,
       assertions: 0,
-      questionsApi: [],
     };
     this.gameSection = this.gameSection.bind(this);
     this.verifyCorrectAnswer = this.verifyCorrectAnswer.bind(this);
@@ -27,12 +24,10 @@ class Game extends React.Component {
     this.saveOnStorage = this.saveOnStorage.bind(this);
     this.removeBorder = this.removeBorder.bind(this);
     this.saveToRanking = this.saveToRanking.bind(this);
-    this.euNaoAguentoMais = this.euNaoAguentoMais.bind(this);
   }
 
   componentDidMount() {
     const { fetchApi } = this.props;
-    this.euNaoAguentoMais();
     this.saveOnStorage();
     fetchApi();
     const ranking = localStorage.getItem('ranking');
@@ -72,13 +67,6 @@ class Game extends React.Component {
   }
 
   resetTimer() { this.setState({ count: 30 }); }
-
-  euNaoAguentoMais() {
-    const { questions } = this.props;
-    this.setState({
-      questionsApi: questions,
-    });
-  }
 
   nextQuestion() {
     const { questionIndex } = this.state;
@@ -156,44 +144,56 @@ class Game extends React.Component {
     localStorage.setItem('ranking', JSON.stringify(sorting));
   }
 
-  gameSection(answer, answerIndex, question) {
-    const { count } = this.state;
+  gameSection() {
+    const { questions } = this.props;
+    const { questionIndex, count, score } = this.state;
+
     return (
-      // <div>
-      //   <Header score={ score } />
-      //   <div className="game-container">
-      //     <section className="question-card">
-      //       <Timer count={ count } decreaseTime={ this.decreaseTime } />
-      //       <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
-      //       <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
-      <button
-        className="answer-btn-style incorrect"
-        type="button"
-        key={ answerIndex }
-        disabled={ (count === 0) }
-        onClick={ () => {
-          this.setState({ isBtnVisible: true });
-          this.verifyCorrectAnswer();
-          this.calculateScore();
-        } }
-        value={ question.correct_answer === answer
-          ? correctAnswer : 'wrong-answer' }
-        data-testid={ question.correct_answer === answer
-          ? correctAnswer : `wrong-answer-${answerIndex}` }
-      >
-        { answer }
-      </button>
-      //     </section>
-      //   </div>
-      // </div>
+      <div>
+        <Header score={ score } />
+        <div className="game-container">
+          <section className="question-card">
+            <Timer count={ count } decreaseTime={ this.decreaseTime } />
+            <h3 data-testid="question-text">{questions[questionIndex].question}</h3>
+            <h4 data-testid="question-category">{questions[questionIndex].category}</h4>
+            {questions[questionIndex].incorrect_answers.map((incorrectAnswer, index) => (
+              <button
+                className="answer-btn-style incorrect"
+                data-testid={ `wrong-answer-${index}` }
+                type="button"
+                key={ index }
+                disabled={ (count === 0) }
+                onClick={ () => {
+                  this.setState({ isBtnVisible: true });
+                  this.verifyCorrectAnswer();
+                } }
+              >
+                { incorrectAnswer }
+              </button>
+            ))}
+            <button
+              className="answer-btn-style correct"
+              data-testid="correct-answer"
+              type="button"
+              key="3"
+              onClick={ () => {
+                this.setState({ isBtnVisible: true });
+                this.verifyCorrectAnswer();
+                this.calculateScore();
+              } }
+              disabled={ (count === 0) }
+            >
+              { questions[questionIndex].correct_answer }
+            </button>
+          </section>
+        </div>
+      </div>
     );
   }
 
   render() {
     const { loading } = this.props;
-    const { isBtnVisible, score, questionIndex, count, questionsApi } = this.state;
-    const question = questionsApi[questionIndex];
-    const allAnswers = [question.correct_answer, ...question.incorrect_answers];
+    const { isBtnVisible, score } = this.state;
     if (loading) {
       return (
         <div>
@@ -202,37 +202,32 @@ class Game extends React.Component {
         </div>
       );
     }
+    if (!isBtnVisible) {
+      return (
+        <div>
+          { this.gameSection() }
+        </div>
+      );
+    }
     return (
       <div>
-        <Header score={ score } />
-        <div className="game-container">
-          <section className="question-card">
-            <Timer count={ count } decreaseTime={ this.decreaseTime } />
-            <h3 data-testid="question-text">{ question.question }</h3>
-            <h4 data-testid="question-category">{ question.category }</h4>
-            {allAnswers.sort().map((answer, answerIndex) => (
-              this.generationAnswers(answer, answerIndex, question)
-            ))}
-            {!isBtnVisible
-                && (
-                  <div className="btn-center">
-                    <button
-                      className="btn-next"
-                      type="button"
-                      data-testid="btn-next"
-                      onClick={ () => { this.nextQuestion(); } }
-                    >
-                      Próxima
-                    </button>
-                  </div>
-                ) }
-          </section>
+        { this.gameSection() }
+        <div className="btn-center">
+          <button
+            className="btn-next"
+            type="button"
+            data-testid="btn-next"
+            onClick={ () => {
+              this.nextQuestion();
+            } }
+          >
+            Próxima
+          </button>
         </div>
       </div>
     );
   }
 }
-
 const mapStateToProps = ({ login, api }) => ({
   name: login.name,
   gravatarEmail: login.gravatarEmail,
