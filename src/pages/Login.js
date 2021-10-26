@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { GiConsoleController, Gi3DGlasses, GiTrophyCup } from 'react-icons/gi';
+import { GiConsoleController, GiTimeBomb, GiTrophyCup } from 'react-icons/gi';
 import { addLoginInfo, fetchTokenAndQuestions } from '../Redux/actions';
 import logo from '../trivia.png';
 import Button from '../components/Button/index';
@@ -60,7 +60,7 @@ class Login extends Component {
     return (
       <header className="App-header">
         <img src={ logo } className="App-logo" alt="logo" />
-        <Gi3DGlasses className="icon-spacer App-logo-mini" size="40" />
+        <GiTimeBomb className="icon-spacer App-logo-mini" size="60" />
         <form className="form" action="">
           <input
             type="text"

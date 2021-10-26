@@ -193,6 +193,7 @@ code {
 .App-logo-mini {
   height: 10vmin;
   pointer-events: none;
+  color:white;
 }
 
 .red-border {
