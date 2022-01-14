@@ -11,7 +11,7 @@ O projeto consiste em um jogo de trivia que gera perguntas a partir da API [Open
 ### No terminal:
 1 - Clone o repositório;
 ```
-git clone git@github.com:JoaoHenriqueAlmeida/Trybe-Frontend-RecipesApp.git
+git clone git@github.com:JoaoHenriqueAlmeida/Trybe-Frontend-ReduxTriviaGame.git
 ```
 2 - instale as dependencias
 ```
