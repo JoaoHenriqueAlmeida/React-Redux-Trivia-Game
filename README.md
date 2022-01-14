@@ -8,6 +8,8 @@ O projeto consiste em um jogo de trivia que gera perguntas a partir da API [Open
 
 ## Instalando as dependencias e executando o projeto
 
+### ### Você pode executar o projeto através [desse link](https://trybe-frontend-redux-trivia-game.vercel.app)
+
 ### No terminal:
 1 - Clone o repositório;
 ```
